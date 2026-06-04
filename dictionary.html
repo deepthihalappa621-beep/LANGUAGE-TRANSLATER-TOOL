@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Word Meaning Tool</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f5f5f5;
+    }
+
+    .box {
+      background: #3F51B5;
+      color: white;
+      padding: 20px;
+      margin: 50px auto;
+      width: 350px;
+      border-radius: 10px;
+    }
+
+    input, button {
+      margin: 8px;
+      padding: 8px;
+      width: 90%;
+    }
+
+    #output {
+      background: white;
+      color: black;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📖 Word Meaning Finder</h1>
+
+<div class="box">
+
+  <input type="text" id="wordInput" placeholder="Enter a word">
+
+  <button onclick="getMeaning()">Get Meaning</button>
+  <button onclick="copyText()">Copy</button>
+
+  <div id="output">Meaning will appear here...</div>
+
+</div>
+
+<script>
+async function getMeaning() {
+  let word = document.getElementById("wordInput").value;
+
+  if (word.trim() === "") {
+    alert("Enter a word!");
+    return;
+  }
+
+  let url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+
+  try {
+    let res = await fetch(url);
+    let data = await res.json();
+
+    let meaning = data[0].meanings[0].definitions[0].definition;
+    let example = data[0].meanings[0].definitions[0].example || "No example available";
+
+    document.getElementById("output").innerHTML =
+      "<b>Word:</b> " + word + "<br><br>" +
+      "<b>Meaning:</b> " + meaning + "<br><br>" +
+      "<b>Example:</b> " + example;
+
+  } catch {
+    document.getElementById("output").innerText = "Word not found!";
+  }
+}
+
+// Copy function
+function copyText() {
+  let text = document.getElementById("output").innerText;
+  navigator.clipboard.writeText(text);
+  alert("Copied!");
+}
+</script>
+
+</body>
+</html>
